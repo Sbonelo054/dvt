@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dvt_navigation"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:name="com.dvt.dvtapp.ui.HomeFragment"
+        android:id="@+id/home_fragment"
+        android:label="Weather"
+        tools:layout="@layout/fragment_home"
+        />
+
+    <fragment
+        android:name="com.dvt.dvtapp.ui.MapsFragment"
+        android:id="@+id/maps_fragment"
+        android:label="Weather"
+        tools:layout="@layout/fragment_home"
+        />
+
+    <fragment
+        android:name="com.dvt.dvtapp.ui.FavouritesFragment"
+        android:id="@+id/favourites_fragment"
+        android:label="Weather"
+        tools:layout="@layout/fragment_home"
+        >
+        <action
+            android:id="@+id/action_favourites_fragment_to_favourites_details_fragment"
+            app:destination="@id/favourites_details_fragment" />
+    </fragment>
+
+    <fragment
+        android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
+        android:id="@+id/favourites_details_fragment"
+        android:label="Weather"
+        tools:layout="@layout/fragment_home"
+        />
+
+</navigation>
