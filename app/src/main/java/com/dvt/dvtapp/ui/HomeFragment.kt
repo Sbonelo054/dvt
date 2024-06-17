@@ -6,17 +6,15 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +31,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel by viewModel<WeatherViewModel>()
@@ -47,6 +46,7 @@ class HomeFragment : Fragment() {
             Places.initialize(this.requireContext(), Constants.PLACES_ID)
         }
         Places.createClient(this.requireContext())
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,16 +78,16 @@ class HomeFragment : Fragment() {
                 recyclerView?.layoutManager = linearLayoutManager
 
                 if (it.weatherList[0].weather[0].main.toString().contains("Cloud")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
-                    binding.imageView.setImageResource(R.drawable.forest_cloudy)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.cloudy_color))
+                   binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_cloudy)
 
                 } else if (it.weatherList[0].weather[0].main.toString().contains("Rain")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
-                    binding.imageView.setImageResource(R.drawable.forest_rainy)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.rainy_color))
+                    binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_rainy)
 
                 } else if (it.weatherList[0].weather[0].main.toString().contains("Sun")){
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                    binding.imageView.setImageResource(R.drawable.forest_sunny)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.sunny_color))
+                    binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_sunny)
                 }
             }
         }
@@ -151,33 +151,6 @@ class HomeFragment : Fragment() {
 
     private fun getHistory(){
 
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu,menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_city -> {
-                onSearch()
-                true
-            }
-
-            R.id.menu_favourites -> {
-                findNavController().navigate(R.id.home_to_favourites)
-                true
-            }
-
-            R.id.menu_maps -> {
-                findNavController().navigate(R.id.home_to_maps)
-                true
-            }
-
-            else -> false
-        }
     }
 
     fun getWeather(){

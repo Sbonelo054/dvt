@@ -5,21 +5,18 @@
     <item
         android:id="@+id/menu_city"
         android:title="Add city"
-
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_favourites"
-
         android:title="Favourites"
-        app:showAsAction="always">
+        app:showAsAction="never">
     </item>
 
     <item
         android:id="@+id/menu_maps"
-
         android:title="Maps"
-        app:showAsAction="always">
+        app:showAsAction="never">
     </item>
 
 </menu>
