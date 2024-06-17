@@ -1,10 +1,14 @@
 package com.dvt.dvtapp.ui
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,17 +29,27 @@ import com.dvt.dvtapp.databinding.FragmentHomeBinding
 import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.utils.Constants
 import com.dvt.dvtapp.viewModels.WeatherViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Locale
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel by viewModel<WeatherViewModel>()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var alert : Dialog? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: ForecastAdapter? = null
@@ -46,12 +61,54 @@ class HomeFragment : Fragment() {
             Places.initialize(this.requireContext(), Constants.PLACES_ID)
         }
         Places.createClient(this.requireContext())
-
+        setHasOptionsMenu(true)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        Dexter.withContext(requireActivity())
+            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    getLocation()
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissionRequest: PermissionRequest?,
+                    permissionToken: PermissionToken?
+                ) {
+                    permissionToken?.continuePermissionRequest()
+                }
+
+            }).check()
         return binding.root
+    }
+    fun getLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if(location!=null){
+                Toast.makeText(context,"location is available",Toast.LENGTH_LONG).show()
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+
+                val addresses: List<Address>? =
+                    geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                val city: String? = addresses?.get(0)?.locality
+                //cityName = city
+                fetchForecast(city.toString())
+            }else{
+                Toast.makeText(context,"location is null",Toast.LENGTH_LONG).show()
+            }
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,11 +116,12 @@ class HomeFragment : Fragment() {
         adapter = ForecastAdapter()
         recyclerView?.setHasFixedSize(true)
         recyclerView?.adapter = adapter
-        fetchForecast()
+        val linearLayoutManager = LinearLayoutManager(requireActivity())
+        recyclerView?.layoutManager = linearLayoutManager
     }
 
-    fun fetchForecast(){
-        viewModel.getForecast("Durban").observe(viewLifecycleOwner) { response ->
+    private fun fetchForecast(place: String){
+        viewModel.getForecast(place).observe(viewLifecycleOwner) { response ->
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
@@ -78,21 +136,24 @@ class HomeFragment : Fragment() {
                 recyclerView?.layoutManager = linearLayoutManager
 
                 if (it.weatherList[0].weather[0].main.toString().contains("Cloud")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.cloudy_color))
-                   binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_cloudy)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
+                   binding.imageView.setImageResource(R.drawable.forest_cloudy)
 
                 } else if (it.weatherList[0].weather[0].main.toString().contains("Rain")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.rainy_color))
-                    binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_rainy)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
+                    binding.imageView.setImageResource(R.drawable.forest_rainy)
 
                 } else if (it.weatherList[0].weather[0].main.toString().contains("Sun")){
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), com.dvt.dvtapp.R.color.sunny_color))
-                    binding.imageView.setImageResource(com.dvt.dvtapp.R.drawable.forest_sunny)
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                    binding.imageView.setImageResource(R.drawable.forest_sunny)
+                } else{
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                    binding.imageView.setImageResource(R.drawable.forest_sunny)
                 }
             }
         }
 
-        viewModel.getCurrentWeather("Durban").observe(viewLifecycleOwner){ response ->
+        viewModel.getCurrentWeather(place).observe(viewLifecycleOwner){ response ->
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
@@ -182,6 +243,36 @@ class HomeFragment : Fragment() {
                 val status= Autocomplete.getStatusFromIntent(data)
                 Toast.makeText(context,status.statusMessage, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return inflater.inflate(R.menu.menu, menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.menu_city -> {
+                onSearch()
+                true
+            }
+
+            R.id.menu_favourites -> {
+                findNavController().navigate(R.id.home_to_favourites)
+                true
+            }
+
+            R.id.menu_maps -> {
+                findNavController().navigate(R.id.home_to_maps)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
