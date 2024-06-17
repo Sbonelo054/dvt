@@ -1,4 +1,4 @@
-package com.dvt.dvtapp.model.focast
+package com.dvt.dvtapp.model.forecast
 
 import com.dvt.dvtapp.model.current.Coord
 import com.google.gson.annotations.SerializedName
