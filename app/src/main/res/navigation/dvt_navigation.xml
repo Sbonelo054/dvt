@@ -10,7 +10,14 @@
         android:id="@+id/home_fragment"
         android:label="Weather"
         tools:layout="@layout/fragment_home"
-        />
+        >
+        <action
+            android:id="@+id/home_to_favourites"
+            app:destination="@id/favourites_fragment" />
+        <action
+            android:id="@+id/home_to_maps"
+            app:destination="@id/maps_fragment" />
+    </fragment>
 
     <fragment
         android:name="com.dvt.dvtapp.ui.MapsFragment"

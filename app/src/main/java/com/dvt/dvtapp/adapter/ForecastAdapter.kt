@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ForecastAdapter(var context: Context): RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
+class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
     private var forecast: List<WeatherList> = ArrayList()
 
 
@@ -44,7 +44,7 @@ class ForecastAdapter(var context: Context): RecyclerView.Adapter<ForecastAdapte
     }
 
     fun setData(daysForecast: List<WeatherList>) {
-        this.forecast = daysForecast
+        forecast = daysForecast
         notifyDataSetChanged()
     }
 
