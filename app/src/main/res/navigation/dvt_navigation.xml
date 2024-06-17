@@ -22,7 +22,7 @@
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesFragment"
         android:id="@+id/favourites_fragment"
-        android:label="Weather"
+        android:label="Favourites"
         tools:layout="@layout/fragment_home"
         >
         <action
@@ -33,7 +33,7 @@
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
         android:id="@+id/favourites_details_fragment"
-        android:label="Weather"
+        android:label="Favourite Details"
         tools:layout="@layout/fragment_home"
         />
 

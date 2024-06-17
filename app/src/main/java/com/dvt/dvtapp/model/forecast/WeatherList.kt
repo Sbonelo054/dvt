@@ -1,11 +1,11 @@
-package com.dvt.dvtapp.model.focast
+package com.dvt.dvtapp.model.forecast
 
 import com.dvt.dvtapp.model.current.Clouds
 import com.dvt.dvtapp.model.current.Sys
 import com.dvt.dvtapp.model.current.Wind
 import com.google.gson.annotations.SerializedName
 
-data class List(
+data class WeatherList(
     @SerializedName("dt"         ) var dt         : Int?               = null,
     @SerializedName("main"       ) var main       : Main?              = Main(),
     @SerializedName("weather"    ) var weather    : ArrayList<Weather> = arrayListOf(),
