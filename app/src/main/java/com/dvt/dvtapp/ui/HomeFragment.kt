@@ -129,26 +129,30 @@ class HomeFragment : Fragment() {
 
             val success = (response as? WeatherResults.SuccessResults)?.data
             success?.let {
-                it.weatherList[0].main
-
+                val description = it.weatherList[0].weather[0].main
+                binding.description.text = description
                 adapter?.setData(it.weatherList)
                 val linearLayoutManager = LinearLayoutManager(requireActivity())
                 binding.WeatherRecyclerview.layoutManager = linearLayoutManager
+                when {
+                    description.toString().contains("Cloud") -> {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
+                        binding.imageView.setImageResource(R.drawable.forest_cloudy)
 
-                if (it.weatherList[0].weather[0].main.toString().contains("Cloud")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
-                   binding.imageView.setImageResource(R.drawable.forest_cloudy)
+                    }
+                    description.toString().contains("Rain") -> {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
+                        binding.imageView.setImageResource(R.drawable.forest_rainy)
 
-                } else if (it.weatherList[0].weather[0].main.toString().contains("Rain")) {
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
-                    binding.imageView.setImageResource(R.drawable.forest_rainy)
-
-                } else if (it.weatherList[0].weather[0].main.toString().contains("Sun")){
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                    binding.imageView.setImageResource(R.drawable.forest_sunny)
-                } else{
-                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                    binding.imageView.setImageResource(R.drawable.forest_sunny)
+                    }
+                    description.toString().contains("Sun") -> {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                        binding.imageView.setImageResource(R.drawable.forest_sunny)
+                    }
+                    else -> {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                        binding.imageView.setImageResource(R.drawable.forest_sunny)
+                    }
                 }
             }
         }
@@ -161,7 +165,6 @@ class HomeFragment : Fragment() {
 
             val success = (response as? WeatherResults.SuccessResults)?.data
             success?.let {
-                binding.description.text = it.weather[0].main
                 binding.temperature.text = it.main?.temp.toString().take(2) + " °\n"
                 binding.currentTemp.text = it.main?.temp.toString().take(2) + " °\n" + "Current "
                 binding.minTemp.text = it.main?.tempMin.toString().take(2) + " °\n" + "min "

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.model.forecast.WeatherList
@@ -18,12 +20,10 @@ import java.util.Date
 class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
     private var forecast: List<WeatherList> = ArrayList()
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.forecast_list, parent, false)
         return ForecastViewHolder(view)
     }
-
     override fun getItemCount(): Int {
         return forecast.size
     }
@@ -35,11 +35,22 @@ class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>(
         val parser = SimpleDateFormat("yyyy-mm-dd HH:mm")
         val formatter = SimpleDateFormat("EEEE HH:mm")
         val resultDate = formatter.format(parser.parse(dayForecast.dtTxt.toString()) as Date)
-
         holder.dateView.text = resultDate
-
-        Picasso.get().load(Constants.IMAGE_URL + dayForecast.weather[0].icon + "@2x.png")
-            .into(holder.imageView)
+        val description = forecast[0].weather[0].main.toString()
+        when {
+            description.contains("Cloud") -> {
+                Picasso.get().load(R.drawable.partlysunny_2x).into(holder.imageView)
+            }
+            description.contains("Rain") -> {
+                Picasso.get().load(R.drawable.rain_2x).into(holder.imageView)
+            }
+            description.contains("Sun") -> {
+                Picasso.get().load(R.drawable.clear_2x).into(holder.imageView)
+            }
+            else -> {
+                Picasso.get().load(R.drawable.clear_2x).into(holder.imageView)
+            }
+        }
     }
 
     fun setData(daysForecast: List<WeatherList>) {
