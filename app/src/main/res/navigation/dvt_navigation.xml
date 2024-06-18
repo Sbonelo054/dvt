@@ -23,17 +23,17 @@
         android:name="com.dvt.dvtapp.ui.MapsFragment"
         android:id="@+id/maps_fragment"
         android:label="Weather"
-        tools:layout="@layout/fragment_home"
+        tools:layout="@layout/fragment_maps"
         />
 
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesFragment"
         android:id="@+id/favourites_fragment"
         android:label="Favourites"
-        tools:layout="@layout/fragment_home"
+        tools:layout="@layout/fragment_favourites"
         >
         <action
-            android:id="@+id/action_favourites_fragment_to_favourites_details_fragment"
+            android:id="@+id/favourites_list_to_favourites_details_fragment"
             app:destination="@id/favourites_details_fragment" />
     </fragment>
 
@@ -41,7 +41,7 @@
         android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
         android:id="@+id/favourites_details_fragment"
         android:label="Favourite Details"
-        tools:layout="@layout/fragment_home"
+        tools:layout="@layout/fragment_favourites_details"
         />
 
 </navigation>

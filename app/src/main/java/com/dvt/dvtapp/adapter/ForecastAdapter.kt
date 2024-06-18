@@ -38,8 +38,7 @@ class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>(
 
         holder.dateView.text = resultDate
 
-        Picasso.get()
-            .load(Constants.IMAGE_URL + dayForecast.weather.get(0).icon + "@2x.png")
+        Picasso.get().load(Constants.IMAGE_URL + dayForecast.weather[0].icon + "@2x.png")
             .into(holder.imageView)
     }
 
