@@ -25,9 +25,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.adapter.ForecastAdapter
+import com.dvt.dvtapp.database.FavouriteTable
 import com.dvt.dvtapp.databinding.FragmentHomeBinding
 import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.utils.Constants
+import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
 import com.dvt.dvtapp.viewModels.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -49,11 +51,11 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel by viewModel<WeatherViewModel>()
+    private val favouriteWeatherViewModel by viewModel<FavouriteWeatherViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var favouriteTable: FavouriteTable
     private var alert : Dialog? = null
-    private var recyclerView: RecyclerView? = null
     private var adapter: ForecastAdapter? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +68,6 @@ class HomeFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
@@ -96,7 +97,6 @@ class HomeFragment : Fragment() {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if(location!=null){
-                Toast.makeText(context,"location is available",Toast.LENGTH_LONG).show()
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
                 val addresses: List<Address>? =
@@ -105,19 +105,19 @@ class HomeFragment : Fragment() {
                 //cityName = city
                 fetchForecast(city.toString())
             }else{
+                onSearch()
                 Toast.makeText(context,"location is null",Toast.LENGTH_LONG).show()
             }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = ForecastAdapter()
-        recyclerView?.setHasFixedSize(true)
-        recyclerView?.adapter = adapter
+        binding.WeatherRecyclerview.setHasFixedSize(true)
+        binding.WeatherRecyclerview.adapter = adapter
         val linearLayoutManager = LinearLayoutManager(requireActivity())
-        recyclerView?.layoutManager = linearLayoutManager
+        binding.WeatherRecyclerview.layoutManager = linearLayoutManager
     }
 
     private fun fetchForecast(place: String){
@@ -133,7 +133,7 @@ class HomeFragment : Fragment() {
 
                 adapter?.setData(it.weatherList)
                 val linearLayoutManager = LinearLayoutManager(requireActivity())
-                recyclerView?.layoutManager = linearLayoutManager
+                binding.WeatherRecyclerview.layoutManager = linearLayoutManager
 
                 if (it.weatherList[0].weather[0].main.toString().contains("Cloud")) {
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
@@ -166,11 +166,12 @@ class HomeFragment : Fragment() {
                 binding.currentTemp.text = it.main?.temp.toString().take(2) + " °\n" + "Current "
                 binding.minTemp.text = it.main?.tempMin.toString().take(2) + " °\n" + "min "
                 binding.maxTemp.text = it.main?.tempMax.toString().take(2) + " °\n" + "max "
+                favouriteTable = FavouriteTable(it.name.toString(),it.main?.tempMin.toString(),it.main?.tempMax.toString(),it.weather[0].description)
             }
         }
     }
 
-     fun connectionError(throwable: Throwable) {
+     private fun connectionError(throwable: Throwable) {
         val showing = alert?.isShowing ?: false
         if(showing)
             return
@@ -205,16 +206,11 @@ class HomeFragment : Fragment() {
                 getHistory()
                 dialog?.dismiss()
             }
-
         alert = builder.create()
         alert?.show()
     }
 
     private fun getHistory(){
-
-    }
-
-    fun getWeather(){
 
     }
 
@@ -235,8 +231,8 @@ class HomeFragment : Fragment() {
             if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data)
                 if(place.name != null){
-                    //val locations = LocationTable(place.name!!)
-                    //locationsViewModel.saveLocation(locations)
+
+                    place.name?.let { fetchForecast(it) }
                     findNavController().navigateUp()
                 }
             }else if(resultCode == AutocompleteActivity.RESULT_ERROR){
@@ -249,7 +245,6 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         return inflater.inflate(R.menu.menu, menu)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -259,6 +254,12 @@ class HomeFragment : Fragment() {
         return when (item.itemId) {
             R.id.menu_city -> {
                 onSearch()
+                true
+            }
+
+            R.id.menu_add_favourite -> {
+                favouriteWeatherViewModel.addFavourite(favouriteTable)
+                findNavController().navigateUp()
                 true
             }
 
