@@ -8,8 +8,13 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/menu_add_favourite"
+        android:title="Add to favourites"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_favourites"
-        android:title="Favourites"
+        android:title="View Favourites"
         app:showAsAction="never">
     </item>
 
@@ -18,5 +23,4 @@
         android:title="Maps"
         app:showAsAction="never">
     </item>
-
 </menu>
