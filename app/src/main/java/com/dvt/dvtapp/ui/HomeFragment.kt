@@ -96,7 +96,6 @@ class HomeFragment : Fragment() {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if(location!=null){
-                Toast.makeText(context,"location is available",Toast.LENGTH_LONG).show()
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
                 val addresses: List<Address>? =
@@ -105,10 +104,10 @@ class HomeFragment : Fragment() {
                 //cityName = city
                 fetchForecast(city.toString())
             }else{
+                onSearch()
                 Toast.makeText(context,"location is null",Toast.LENGTH_LONG).show()
             }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -237,6 +236,7 @@ class HomeFragment : Fragment() {
                 if(place.name != null){
                     //val locations = LocationTable(place.name!!)
                     //locationsViewModel.saveLocation(locations)
+                    place.name?.let { fetchForecast(it) }
                     findNavController().navigateUp()
                 }
             }else if(resultCode == AutocompleteActivity.RESULT_ERROR){
