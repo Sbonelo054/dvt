@@ -80,7 +80,7 @@ class MapsFragment : Fragment() {
         task?.addOnSuccessListener { location ->
             supportMapFragment?.getMapAsync { googleMap ->
                 if (location != null) {
-                    favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
+                 /*   favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
                         if (it != null) {
                             for (place in it) {
                                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
@@ -109,7 +109,7 @@ class MapsFragment : Fragment() {
                                 }
                             }
                         }
-                    }
+                    }*/
 
                 }
             }
