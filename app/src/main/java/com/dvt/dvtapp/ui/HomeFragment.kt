@@ -57,7 +57,6 @@ class HomeFragment : Fragment() {
     private var alert : Dialog? = null
     private var adapter: ForecastAdapter? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!Places.isInitialized()) {
@@ -69,7 +68,6 @@ class HomeFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
@@ -173,7 +171,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-     fun connectionError(throwable: Throwable) {
+     private fun connectionError(throwable: Throwable) {
         val showing = alert?.isShowing ?: false
         if(showing)
             return
@@ -208,7 +206,6 @@ class HomeFragment : Fragment() {
                 getHistory()
                 dialog?.dismiss()
             }
-
         alert = builder.create()
         alert?.show()
     }
@@ -248,7 +245,6 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         return inflater.inflate(R.menu.menu, menu)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

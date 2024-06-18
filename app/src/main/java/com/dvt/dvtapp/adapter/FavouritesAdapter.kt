@@ -47,8 +47,7 @@ class FavouritesAdapter(var context: Context): RecyclerView.Adapter<FavouritesAd
             )
         }
 
-        holder.minMaxTemperature.text =
-            "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
+        holder.minMaxTemperature.text = "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
         holder.favouritePlace.text = favourite.place
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {

@@ -10,8 +10,7 @@ import com.dvt.dvtapp.repository.FavouriteWeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavouriteWeatherViewModel(application: Application, private val repository: FavouriteWeatherRepository):
-    AndroidViewModel(application) {
+class FavouriteWeatherViewModel(private val repository: FavouriteWeatherRepository): ViewModel() {
 
     fun addFavourite(favouriteTable: FavouriteTable) {
         viewModelScope.launch(Dispatchers.IO) {
