@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
     private val favouriteWeatherViewModel by viewModel<FavouriteWeatherViewModel>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var favouriteTable: FavouriteTable
-    private var alert : Dialog? = null
+    private var alert: Dialog? = null
     private var adapter: ForecastAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +66,12 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -89,24 +94,31 @@ class HomeFragment : Fragment() {
             }).check()
         return binding.root
     }
-    fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+    fun getLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if(location!=null){
+            if (location != null) {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-
                 val addresses: List<Address>? =
                     geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 val city: String? = addresses?.get(0)?.locality
-                //cityName = city
                 fetchForecast(city.toString())
-            }else{
+            } else {
                 onSearch()
-                Toast.makeText(context,"location is null",Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    getString(R.string.location_is_not_available),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -120,44 +132,66 @@ class HomeFragment : Fragment() {
         binding.WeatherRecyclerview.layoutManager = linearLayoutManager
     }
 
-    private fun fetchForecast(place: String){
-        viewModel.getForecast(place).observe(viewLifecycleOwner) { response ->
-            val error = response as? WeatherResults.Error
-            if (error != null) {
-                connectionError(error.error)
-            }
+    private fun fetchForecast(place: String) {
+        viewModel.getForecast(place, unit = getString(R.string.metric))
+            .observe(viewLifecycleOwner) { response ->
+                val error = response as? WeatherResults.Error
+                if (error != null) {
+                    connectionError(error.error)
+                }
 
-            val success = (response as? WeatherResults.SuccessResults)?.data
-            success?.let {
-                val description = it.weatherList[0].weather[0].main
-                binding.description.text = description
-                adapter?.setData(it.weatherList)
-                val linearLayoutManager = LinearLayoutManager(requireActivity())
-                binding.WeatherRecyclerview.layoutManager = linearLayoutManager
-                when {
-                    description.toString().contains("Cloud") -> {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
-                        binding.imageView.setImageResource(R.drawable.forest_cloudy)
+                val success = (response as? WeatherResults.SuccessResults)?.data
+                success?.let {
+                    val description = it.weatherList[0].weather[0].main
+                    binding.description.text = description
+                    adapter?.setData(it.weatherList)
+                    val linearLayoutManager = LinearLayoutManager(requireActivity())
+                    binding.WeatherRecyclerview.layoutManager = linearLayoutManager
+                    when {
+                        description.toString().contains(getString(R.string.cloud)) -> {
+                            binding.root.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.cloudy_color
+                                )
+                            )
+                            binding.imageView.setImageResource(R.drawable.forest_cloudy)
+                        }
 
-                    }
-                    description.toString().contains("Rain") -> {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
-                        binding.imageView.setImageResource(R.drawable.forest_rainy)
+                        description.toString().contains(getString(R.string.rain)) -> {
+                            binding.root.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.rainy_color
+                                )
+                            )
+                            binding.imageView.setImageResource(R.drawable.forest_rainy)
+                        }
 
-                    }
-                    description.toString().contains("Sun") -> {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                        binding.imageView.setImageResource(R.drawable.forest_sunny)
-                    }
-                    else -> {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                        binding.imageView.setImageResource(R.drawable.forest_sunny)
+                        description.toString().contains(getString(R.string.sun)) -> {
+                            binding.root.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.sunny_color
+                                )
+                            )
+                            binding.imageView.setImageResource(R.drawable.forest_sunny)
+                        }
+
+                        else -> {
+                            binding.root.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.sunny_color
+                                )
+                            )
+                            binding.imageView.setImageResource(R.drawable.forest_sunny)
+                        }
                     }
                 }
             }
-        }
 
-        viewModel.getCurrentWeather(place).observe(viewLifecycleOwner){ response ->
+        viewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
@@ -166,38 +200,54 @@ class HomeFragment : Fragment() {
             val success = (response as? WeatherResults.SuccessResults)?.data
             success?.let {
                 binding.temperature.text = it.main?.temp.toString().take(2) + " °\n"
-                binding.currentTemp.text = it.main?.temp.toString().take(2) + " °\n" + "Current "
-                binding.minTemp.text = it.main?.tempMin.toString().take(2) + " °\n" + "min "
-                binding.maxTemp.text = it.main?.tempMax.toString().take(2) + " °\n" + "max "
-                favouriteTable = FavouriteTable(it.name.toString(),it.main?.tempMin.toString(),it.main?.tempMax.toString(),it.weather[0].description)
+                binding.currentTemp.text =
+                    it.main?.temp.toString().take(2) + " °\n" + getString(R.string.current)
+                binding.minTemp.text =
+                    it.main?.tempMin.toString().take(2) + " °\n" + getString(R.string.min)
+                binding.maxTemp.text =
+                    it.main?.tempMax.toString().take(2) + " °\n" + getString(R.string.max)
+                favouriteTable = FavouriteTable(
+                    it.name.toString(),
+                    it.main?.tempMin.toString(),
+                    it.main?.tempMax.toString(),
+                    it.weather[0].description
+                )
             }
         }
     }
 
-     private fun connectionError(throwable: Throwable) {
+    private fun connectionError(throwable: Throwable) {
         val showing = alert?.isShowing ?: false
-        if(showing)
+        if (showing)
             return
-        val message= throwable.toString()
+        val message = throwable.toString()
 
         val title: String
         val content: String
         when {
-            message.contains("java.net.UnknownHostException",true) -> {
-                title =  "Internet Not Available"
-                content = "Could not connect to the Internet. Please verify that you are connected and try again"
+            message.contains(getString(R.string.java_net_unknownhostexception), true) -> {
+                title = getString(R.string.internet_not_available)
+                content =
+                    getString(R.string.could_not_connect_to_the_internet_please_verify_that_you_are_connected_and_try_again)
             }
-            message.contains("java.net.SocketTimeoutException",true) -> {
-                title =  "Connection Timeout"
-                content = "Server took too long to respond. This may be caused by a bad network connection"
+
+            message.contains(getString(R.string.java_net_sockettimeoutexception), true) -> {
+                title = getString(R.string.connection_timeout)
+                content =
+                    getString(R.string.server_took_too_long_to_respond_this_may_be_caused_by_a_bad_network_connection)
             }
-            message.contains("javax.net.ssl.SSLPeerUnverifiedException", true) -> {
-                title = "SSL Cert. Unverified"
-                content = "Hostname not verified"
+
+            message.contains(
+                getString(R.string.javax_net_ssl_sslpeerunverifiedexception),
+                true
+            ) -> {
+                title = getString(R.string.ssl_cert_unverified)
+                content = getString(R.string.hostname_not_verified)
             }
+
             else -> {
-                title = "Unknown Error"
-                content = "An Unknown error has occurred. Please try again later"
+                title = getString(R.string.unknown_error)
+                content = getString(R.string.an_unknown_error_has_occurred_please_try_again_later)
             }
         }
 
@@ -205,7 +255,7 @@ class HomeFragment : Fragment() {
         builder.setTitle(title)
             .setMessage(content)
             .setCancelable(true)
-            .setPositiveButton("Retry") { dialog: DialogInterface?, _: Int ->
+            .setPositiveButton(getString(R.string.retry)) { dialog: DialogInterface?, _: Int ->
                 getHistory()
                 dialog?.dismiss()
             }
@@ -213,34 +263,35 @@ class HomeFragment : Fragment() {
         alert?.show()
     }
 
-    private fun getHistory(){
+    private fun getHistory() {
 
     }
 
-    private fun onSearch(){
+    private fun onSearch() {
         val fields: List<Place.Field> = listOf(
             Place.Field.ID,
             Place.Field.NAME,
             Place.Field.ADDRESS,
             Place.Field.LAT_LNG
         )
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this.requireContext())
+        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+            .build(this.requireContext())
         startActivityForResult(intent, 100)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(data!=null) {
+        if (data != null) {
             if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data)
-                if(place.name != null){
+                if (place.name != null) {
 
                     place.name?.let { fetchForecast(it) }
                     findNavController().navigateUp()
                 }
-            }else if(resultCode == AutocompleteActivity.RESULT_ERROR){
-                val status= Autocomplete.getStatusFromIntent(data)
-                Toast.makeText(context,status.statusMessage, Toast.LENGTH_SHORT).show()
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                val status = Autocomplete.getStatusFromIntent(data)
+                Toast.makeText(context, status.statusMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }

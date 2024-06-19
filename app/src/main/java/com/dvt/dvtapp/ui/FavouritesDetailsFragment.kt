@@ -22,7 +22,7 @@ class FavouritesDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentFavouritesDetailsBinding.inflate(inflater, container, false)
-        val place = arguments?.getString("place")
+        val place = arguments?.getString(getString(R.string.place))
         weatherViewModel.getCurrentWeather(place).observe(viewLifecycleOwner) {
 
         }
