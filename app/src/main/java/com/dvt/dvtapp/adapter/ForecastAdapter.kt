@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
+class ForecastAdapter(private val context: Context): RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>() {
     private var forecast: List<WeatherList> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
@@ -38,12 +38,12 @@ class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>(
         holder.dateView.text = resultDate
         val description = forecast[0].weather[0].main.toString()
         when {
-            description.contains("Cloud") -> { Picasso.get().load(R.drawable.partlysunny_2x).into(holder.imageView)
+            description.contains(context.resources.getString(R.string.cloud)) -> { Picasso.get().load(R.drawable.partlysunny_2x).into(holder.imageView)
             }
-            description.contains("Rain") -> {
+            description.contains(context.resources.getString(R.string.rain)) -> {
                 Picasso.get().load(R.drawable.rain_2x).into(holder.imageView)
             }
-            description.contains("Sun") -> {
+            description.contains(context.resources.getString(R.string.sun)) -> {
                 Picasso.get().load(R.drawable.clear_2x).into(holder.imageView)
             }
             else -> {

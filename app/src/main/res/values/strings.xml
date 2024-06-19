@@ -25,4 +25,5 @@
     <string name="sunnyStatusBar">#47AB2F</string>
     <string name="rainyStatusBar">#57575D</string>
     <string name="cloudyStatusBar">#54717A</string>
+    <string name="favourites">Favourites</string>
 </resources>
