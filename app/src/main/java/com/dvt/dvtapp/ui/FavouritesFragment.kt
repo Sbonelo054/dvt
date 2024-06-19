@@ -46,7 +46,7 @@ class FavouritesFragment : Fragment() {
                 adapter?.setOnClickListener(object :
                     FavouritesAdapter.OnClickListener {
                     override fun onClick(position: Int, model: FavouriteTable) {
-                        val bundle = bundleOf("place" to model.place)
+                        val bundle = bundleOf(getString(R.string.place) to model.place)
                         findNavController().navigate(R.id.favourites_list_to_favourites_details_fragment, bundle
                         )
                     }
@@ -54,6 +54,4 @@ class FavouritesFragment : Fragment() {
             }
         }
     }
-
-
 }

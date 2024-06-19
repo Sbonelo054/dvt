@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">DVT App</string>
     <string name="google_map_api_key">AIzaSyBJpBXmUQgxdzlLGc8Dt6WDkDPiU5sP0dE</string>
+    <string name="cloud">Cloud</string>
+    <string name="rain">Rain</string>
+    <string name="sun">Sun</string>
+    <string name="java_net_unknownhostexception">java.net.UnknownHostException</string>
+    <string name="internet_not_available">Internet Not Available</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="ssl_cert_unverified">SSL Cert. Unverified</string>
+    <string name="retry">Retry</string>
+    <string name="could_not_connect_to_the_internet_please_verify_that_you_are_connected_and_try_again">Could not connect to the Internet. Please verify that you are connected and try again</string>
+    <string name="java_net_sockettimeoutexception">java.net.SocketTimeoutException</string>
+    <string name="connection_timeout">Connection Timeout</string>
+    <string name="server_took_too_long_to_respond_this_may_be_caused_by_a_bad_network_connection">Server took too long to respond. This may be caused by a bad network connection</string>
+    <string name="javax_net_ssl_sslpeerunverifiedexception">javax.net.ssl.SSLPeerUnverifiedException</string>
+    <string name="hostname_not_verified">Hostname not verified</string>
+    <string name="an_unknown_error_has_occurred_please_try_again_later">An Unknown error has occurred. Please try again later</string>
+    <string name="current">"Current "</string>
+    <string name="min">"min "</string>
+    <string name="max">"max "</string>
+    <string name="location_is_not_available">Location is not available</string>
+    <string name="metric">metric</string>
+    <string name="place">place</string>
 </resources>
