@@ -3,6 +3,8 @@ package com.dvt.dvtapp.ui
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,7 +20,6 @@ import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.viewModels.WeatherViewModel
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class FavouritesDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesDetailsBinding
@@ -36,8 +37,8 @@ class FavouritesDetailsFragment : Fragment() {
         return binding.root
     }
 
-    private fun fetchWeather(place: String){
-        weatherViewModel.getForecast(place, unit = getString(R.string.metric)).observe(viewLifecycleOwner) { response->
+    private fun fetchWeather(place: String) {
+        weatherViewModel.getForecast(place, unit = getString(R.string.metric)).observe(viewLifecycleOwner) { response ->
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
@@ -48,21 +49,34 @@ class FavouritesDetailsFragment : Fragment() {
                 val temperature = "${it.weatherList[0].main?.temp.toString().take(2)} °"
                 when {
                     description.toString().contains(getString(R.string.cloud)) -> {
+                        val window = (requireActivity() as MainActivity).window
                         binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
-                        Picasso.get().load(R.drawable.clear_2x).into(binding.favouriteDetailsIcon)
+                        window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.cloudy_color)
+                        (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.cloudyStatusBar))))
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
+                        Picasso.get().load(R.drawable.partlysunny_2x).into(binding.favouriteDetailsIcon)
                     }
+
                     description.toString().contains(getString(R.string.rain)) -> {
+                        val window = (requireActivity() as MainActivity).window
                         binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
-                        Picasso.get().load(R.drawable.clear_2x).into(binding.favouriteDetailsIcon)
+                        window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.rainy_color)
+                        (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.rainyStatusBar))))
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
+                        Picasso.get().load(R.drawable.rain_2x).into(binding.favouriteDetailsIcon)
                     }
+
                     else -> {
+                        val window = (requireActivity() as MainActivity).window
+                        window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
+                        (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                         binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
                         Picasso.get().load(R.drawable.clear_2x).into(binding.favouriteDetailsIcon)
                     }
                 }
                 val visibilityData = "${it.weatherList[0].visibility.toString()} ft"
                 val pressureData = "${it.weatherList[0].main?.pressure.toString()} hPa"
-                val seaLevelData =  "${it.weatherList[0].main?.grndLevel.toString()} hPa"
+                val seaLevelData = "${it.weatherList[0].main?.grndLevel.toString()} hPa"
                 val humidityData = "${it.weatherList[0].main?.humidity.toString()} %"
                 val windData = "${it.weatherList[0].wind?.deg.toString()} °"
                 val cloudsData = "${it.weatherList[0].clouds?.all.toString()} %"
@@ -142,5 +156,4 @@ class FavouritesDetailsFragment : Fragment() {
         alert = builder.create()
         alert?.show()
     }
-
 }

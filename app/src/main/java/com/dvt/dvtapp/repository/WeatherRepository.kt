@@ -5,7 +5,7 @@ import com.dvt.dvtapp.model.current.CurrentWeather
 import com.dvt.dvtapp.model.forecast.ForecastWeather
 
 interface WeatherRepository {
-    suspend fun getForecast(place : String?, unit : String) : WeatherResults<ForecastWeather>
+    suspend fun getForecast(place: String?, unit: String): WeatherResults<ForecastWeather>
 
-    suspend fun getCurrentWeather(place: String?) : WeatherResults<CurrentWeather>
+    suspend fun getCurrentWeather(place: String?): WeatherResults<CurrentWeather>
 }

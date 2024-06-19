@@ -1,5 +1,6 @@
 package com.dvt.dvtapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,23 +11,34 @@ import com.dvt.dvtapp.R
 import com.dvt.dvtapp.database.FavouriteTable
 import com.squareup.picasso.Picasso
 
-class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder>() {
+class FavouritesAdapter(private val context: Context) :
+    RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder>() {
     var favourites: List<FavouriteTable> = ArrayList()
     private var onClickListener: OnClickListener? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouritesAdapter.FavouritesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.favourites_list, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FavouritesAdapter.FavouritesViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.favourites_list, parent, false)
         return FavouritesViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FavouritesAdapter.FavouritesViewHolder, position: Int) {
         val favourite = favourites[position]
-        if (favourite.description?.contains("Cloud") == true) {
-            Picasso.get().load(R.drawable.partlysunny_2x).into(holder.image)
-        } else if (favourite.description?.contains("Rain") == true) {
-            Picasso.get().load(R.drawable.rain_2x).into(holder.image)
-        } else {
-            Picasso.get().load(R.drawable.clear_2x).into(holder.image)
+        when {
+            favourite.description?.contains(context.resources.getString(R.string.cloud)) == true -> {
+                Picasso.get().load(R.drawable.partlysunny_2x).into(holder.image)
+            }
+
+            favourite.description?.contains(context.resources.getString(R.string.rain)) == true -> {
+                Picasso.get().load(R.drawable.rain_2x).into(holder.image)
+            }
+
+            else -> {
+                Picasso.get().load(R.drawable.clear_2x).into(holder.image)
+            }
         }
         val minTemp = "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
         holder.minMaxTemperature.text = minTemp

@@ -14,7 +14,6 @@ import com.dvt.dvtapp.adapter.FavouritesAdapter
 import com.dvt.dvtapp.database.FavouriteTable
 import com.dvt.dvtapp.databinding.FragmentFavouritesBinding
 import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
-import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouritesFragment : Fragment() {
@@ -37,17 +36,17 @@ class FavouritesFragment : Fragment() {
         fetchFavouriteWeather(description.toString())
     }
 
-    private fun fetchFavouriteWeather(description: String){
-        favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner){
+    private fun fetchFavouriteWeather(description: String) {
+        favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner) {
             if (it != null) {
-                    if (description.contains(getString(R.string.cloud))) {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
-                    } else if (description.contains(getString(R.string.rain))) {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
-                    } else {
-                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-                    }
-                adapter = FavouritesAdapter()
+                if (description.contains(getString(R.string.cloud))) {
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
+                } else if (description.contains(getString(R.string.rain))) {
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
+                } else {
+                    binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                }
+                adapter = FavouritesAdapter(requireContext())
                 binding.favouriteRecyclerview.setHasFixedSize(true)
                 binding.favouriteRecyclerview.adapter = adapter
                 adapter?.setData(it)
@@ -57,7 +56,8 @@ class FavouritesFragment : Fragment() {
                     FavouritesAdapter.OnClickListener {
                     override fun onClick(position: Int, model: FavouriteTable) {
                         val bundle = bundleOf(getString(R.string.place) to model.place, "description" to "description")
-                        findNavController().navigate(R.id.favourites_list_to_favourites_details_fragment, bundle
+                        findNavController().navigate(
+                            R.id.favourites_list_to_favourites_details_fragment, bundle
                         )
                     }
                 })
