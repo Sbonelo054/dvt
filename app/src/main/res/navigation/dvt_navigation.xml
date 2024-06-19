@@ -15,21 +15,16 @@
             android:id="@+id/home_to_favourites"
             app:destination="@id/favourites_fragment" />
         <action
-            android:id="@+id/home_to_maps"
-            app:destination="@id/maps_fragment" />
-    </fragment>
+            android:id="@+id/home_to_map_fragment"
+            app:destination="@id/map_fragment" />
 
-    <fragment
-        android:name="com.dvt.dvtapp.ui.MapsFragment"
-        android:id="@+id/maps_fragment"
-        android:label="Weather"
-        tools:layout="@layout/fragment_maps"
-        />
+    </fragment>
 
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesFragment"
         android:id="@+id/favourites_fragment"
         android:label="Favourites"
+        android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites"
         >
         <action
@@ -41,7 +36,16 @@
         android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
         android:id="@+id/favourites_details_fragment"
         android:label="Favourite Details"
+        android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites_details"
         />
+
+    <fragment
+        android:name="com.dvt.dvtapp.ui.MapsFragment"
+        android:id="@+id/map_fragment"
+        android:fontFamily="@font/gotham_light"
+
+        android:label="Maps"
+        tools:layout="@layout/fragment_maps"/>
 
 </navigation>

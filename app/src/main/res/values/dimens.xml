@@ -1,0 +1,12 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="medium">50dp</dimen>
+    <dimen name="mediumImage">64dp</dimen>
+    <dimen name="smallDimension">8dp</dimen>
+    <dimen name="smallMediumDimension">16dp</dimen>
+    <dimen name="miniDimension">1dp</dimen>
+    <dimen name="smallerDimension">3dp</dimen>
+    <dimen name="MediumSmallDimension">15sp</dimen>
+    <dimen name="large">85dp</dimen>
+    <dimen name="mediumLarge">52sp</dimen>
+</resources>

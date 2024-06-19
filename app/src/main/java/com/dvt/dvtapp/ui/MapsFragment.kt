@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.databinding.FragmentMapsBinding
@@ -78,42 +77,41 @@ class MapsFragment : Fragment() {
         }
         val task = fusedLocationClient?.lastLocation
         task?.addOnSuccessListener { location ->
-            supportMapFragment?.getMapAsync { googleMap ->
-                if (location != null) {
-                    favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
-                        if (it != null) {
-                            for (place in it) {
-                                val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                                val addresses: List<Address>? =
-                                    geocoder.getFromLocationName(place.place, 10)
-                                val lat: Double? = addresses?.get(0)?.latitude
-                                val lon: Double? = addresses?.get(0)?.longitude
+            supportMapFragment?.getMapAsync(object : OnMapReadyCallback {
+                override fun onMapReady(googleMap: GoogleMap) {
+                    if (location != null) {
+                        favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
+                            if (it != null) {
+                                for (place in it) {
+                                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                                    val addresses: List<Address>? = geocoder.getFromLocationName(place.place, 0)
+                                    val lat: Double? = addresses?.get(0)?.latitude
+                                    val lon: Double? = addresses?.get(0)?.longitude
 
-                                if (lat != null && lon != null) {
-                                    val favLatLon = LatLng(lat, lon)
-                                    val locationArrayList: ArrayList<LatLng> = ArrayList()
-                                    locationArrayList.add(favLatLon)
-                                    for (i in locationArrayList.indices) {
-                                        googleMap.addMarker(
-                                            MarkerOptions().position(
-                                                locationArrayList[i]
-                                            ).title("Favourites")
-                                        )
-                                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f))
-                                        googleMap.moveCamera(
-                                            CameraUpdateFactory.newLatLng(
-                                                locationArrayList[i]
+                                    if (lat != null && lon != null) {
+                                        val favLatLon = LatLng(lat, lon)
+                                        val locationArrayList: ArrayList<LatLng> = ArrayList()
+                                        locationArrayList.add(favLatLon)
+                                        for (i in locationArrayList.indices) {
+                                            googleMap.addMarker(
+                                                MarkerOptions().position(
+                                                    locationArrayList[i]
+                                                ).title("Favourites")
                                             )
-                                        )
+                                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f))
+                                            googleMap.moveCamera(
+                                                CameraUpdateFactory.newLatLng(
+                                                    locationArrayList[i]
+                                                )
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-
                 }
-            }
+            })
         }
     }
-
 }

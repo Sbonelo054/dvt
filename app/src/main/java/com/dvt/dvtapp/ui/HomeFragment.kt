@@ -7,6 +7,8 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -19,10 +21,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.dvt.dvtapp.MainActivity
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.adapter.ForecastAdapter
 import com.dvt.dvtapp.database.FavouriteTable
@@ -44,16 +47,16 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
 import java.util.Locale
-
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel by viewModel<WeatherViewModel>()
-    private val favouriteWeatherViewModel by viewModel<FavouriteWeatherViewModel>()
+    private val viewModel: WeatherViewModel by inject()
+    private val favouriteWeatherViewModel : FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var favouriteTable: FavouriteTable
+    private var mainDescription: String = ""
     private var alert: Dialog? = null
     private var adapter: ForecastAdapter? = null
 
@@ -125,7 +128,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = ForecastAdapter()
+        adapter = ForecastAdapter(requireContext())
         binding.WeatherRecyclerview.setHasFixedSize(true)
         binding.WeatherRecyclerview.adapter = adapter
         val linearLayoutManager = LinearLayoutManager(requireActivity())
@@ -139,10 +142,11 @@ class HomeFragment : Fragment() {
                 if (error != null) {
                     connectionError(error.error)
                 }
-
+                val window = (requireActivity() as MainActivity).window
                 val success = (response as? WeatherResults.SuccessResults)?.data
                 success?.let {
                     val description = it.weatherList[0].weather[0].main
+                    mainDescription = description.toString()
                     binding.description.text = description
                     adapter?.setData(it.weatherList)
                     val linearLayoutManager = LinearLayoutManager(requireActivity())
@@ -155,6 +159,8 @@ class HomeFragment : Fragment() {
                                     R.color.cloudy_color
                                 )
                             )
+                            (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.cloudyStatusBar))))
+                            window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.cloudy_color)
                             binding.imageView.setImageResource(R.drawable.forest_cloudy)
                         }
 
@@ -165,6 +171,8 @@ class HomeFragment : Fragment() {
                                     R.color.rainy_color
                                 )
                             )
+                            window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.rainy_color)
+                            (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.rainyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_rainy)
                         }
 
@@ -175,6 +183,8 @@ class HomeFragment : Fragment() {
                                     R.color.sunny_color
                                 )
                             )
+                            window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
+                            (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_sunny)
                         }
 
@@ -185,6 +195,8 @@ class HomeFragment : Fragment() {
                                     R.color.sunny_color
                                 )
                             )
+                            window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
+                            (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_sunny)
                         }
                     }
@@ -210,7 +222,7 @@ class HomeFragment : Fragment() {
                     it.name.toString(),
                     it.main?.tempMin.toString(),
                     it.main?.tempMax.toString(),
-                    it.weather[0].description
+                    it.weather[0].main
                 )
             }
         }
@@ -285,7 +297,6 @@ class HomeFragment : Fragment() {
             if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data)
                 if (place.name != null) {
-
                     place.name?.let { fetchForecast(it) }
                     findNavController().navigateUp()
                 }
@@ -297,14 +308,10 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         return inflater.inflate(R.menu.menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.menu_city -> {
                 onSearch()
@@ -318,12 +325,13 @@ class HomeFragment : Fragment() {
             }
 
             R.id.menu_favourites -> {
-                findNavController().navigate(R.id.home_to_favourites)
+                val bundle = bundleOf("description" to mainDescription)
+                findNavController().navigate(R.id.home_to_favourites, bundle)
                 true
             }
 
             R.id.menu_maps -> {
-                findNavController().navigate(R.id.home_to_maps)
+                findNavController().navigate(R.id.home_to_map_fragment)
                 true
             }
 
