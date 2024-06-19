@@ -1,8 +1,10 @@
 package com.dvt.dvtapp.viewModels
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dvt.dvtapp.R
 import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.model.current.CurrentWeather
 import com.dvt.dvtapp.model.forecast.ForecastWeather
@@ -11,10 +13,10 @@ import kotlinx.coroutines.launch
 
 class WeatherViewModel(private val weatherRepository: WeatherRepository): ViewModel() {
 
-    fun getForecast(place: String?): MutableLiveData<WeatherResults<ForecastWeather>> {
+    fun getForecast(place: String?, unit: String): MutableLiveData<WeatherResults<ForecastWeather>> {
         val weatherData: MutableLiveData<WeatherResults<ForecastWeather>> = MutableLiveData()
         viewModelScope.launch {
-            val results = weatherRepository.getForecast(place, unit = "metric")
+            val results = weatherRepository.getForecast(place, unit)
             weatherData.value = results
         }
         return weatherData

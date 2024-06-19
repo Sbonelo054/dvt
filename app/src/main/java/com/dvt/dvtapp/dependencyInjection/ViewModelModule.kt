@@ -11,6 +11,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavouriteWeatherViewModel(get())
+        FavouriteWeatherViewModel(get(), get())
     }
 }
