@@ -26,4 +26,11 @@
     <string name="rainyStatusBar">#57575D</string>
     <string name="cloudyStatusBar">#54717A</string>
     <string name="favourites">Favourites</string>
+    <string name="today">Today</string>
+    <string name="clouds">Clouds</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="visibility">Visibility</string>
+    <string name="sea_level">Sea Level</string>
 </resources>

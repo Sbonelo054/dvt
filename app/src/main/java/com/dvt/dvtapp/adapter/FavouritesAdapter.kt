@@ -28,8 +28,8 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.FavouritesViewH
         } else {
             Picasso.get().load(R.drawable.clear_2x).into(holder.image)
         }
-
-        holder.minMaxTemperature.text = "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
+        val minTemp = "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
+        holder.minMaxTemperature.text = minTemp
         holder.description.text = favourite.description
         holder.favouritePlace.text = favourite.place
         holder.itemView.setOnClickListener {
