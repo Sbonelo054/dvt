@@ -87,6 +87,16 @@ class MapsFragment : Fragment() {
                                     geocoder.getFromLocationName(place.place, 1)
                                 val lat: Double? = addresses?.get(0)?.latitude
                                 val lon: Double? = addresses?.get(0)?.longitude
+            supportMapFragment?.getMapAsync(object : OnMapReadyCallback {
+                override fun onMapReady(googleMap: GoogleMap) {
+                    if (location != null) {
+                        favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
+                            if (it != null) {
+                                for (place in it) {
+                                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                                    val addresses: List<Address>? = geocoder.getFromLocationName(place.place, 1)
+                                    val lat: Double? = addresses?.get(0)?.latitude
+                                    val lon: Double? = addresses?.get(0)?.longitude
 
                                 if (lat != null && lon != null) {
                                     val favLatLon = LatLng(lat, lon)
