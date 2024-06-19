@@ -11,7 +11,7 @@ val repoModule = module {
         WeatherRepositoryImpl()
     }
 
-    single<FavouriteWeatherRepository> {
+    factory<FavouriteWeatherRepository> {
         FavouriteWeatherRepositoryImpl(application = get())
     }
 }
