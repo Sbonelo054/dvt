@@ -96,7 +96,9 @@ class HomeFragment : Fragment() {
 
             }).check()
         binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
-
+        val window = (requireActivity() as MainActivity).window
+        window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
+        (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
         return binding.root
     }
 
@@ -113,8 +115,7 @@ class HomeFragment : Fragment() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address>? =
-                    geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 val city: String? = addresses?.get(0)?.locality
                 fetchForecast(city.toString())
             } else {
