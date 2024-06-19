@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/sunny_color"
     android:fillViewport="true"
     tools:context=".ui.HomeFragment">
 
@@ -71,7 +72,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="86dp"
             android:layout_marginRight="86dp"
-            android:src="@drawable/clear_3x"
             app:layout_constraintEnd_toStartOf="@+id/favouriteDetailsTemperature"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
