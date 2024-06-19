@@ -18,14 +18,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.dvt.dvtapp.MainActivity
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.adapter.ForecastAdapter
@@ -49,9 +48,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
-
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -59,6 +56,7 @@ class HomeFragment : Fragment() {
     private val favouriteWeatherViewModel : FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var favouriteTable: FavouriteTable
+    private var mainDescription: String = ""
     private var alert: Dialog? = null
     private var adapter: ForecastAdapter? = null
 
@@ -130,7 +128,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = ForecastAdapter()
+        adapter = ForecastAdapter(requireContext())
         binding.WeatherRecyclerview.setHasFixedSize(true)
         binding.WeatherRecyclerview.adapter = adapter
         val linearLayoutManager = LinearLayoutManager(requireActivity())
@@ -148,6 +146,7 @@ class HomeFragment : Fragment() {
                 val success = (response as? WeatherResults.SuccessResults)?.data
                 success?.let {
                     val description = it.weatherList[0].weather[0].main
+                    mainDescription = description.toString()
                     binding.description.text = description
                     adapter?.setData(it.weatherList)
                     val linearLayoutManager = LinearLayoutManager(requireActivity())
@@ -223,7 +222,7 @@ class HomeFragment : Fragment() {
                     it.name.toString(),
                     it.main?.tempMin.toString(),
                     it.main?.tempMax.toString(),
-                    it.weather[0].description
+                    it.weather[0].main
                 )
             }
         }
@@ -326,7 +325,8 @@ class HomeFragment : Fragment() {
             }
 
             R.id.menu_favourites -> {
-                findNavController().navigate(R.id.home_to_favourites)
+                val bundle = bundleOf("description" to mainDescription)
+                findNavController().navigate(R.id.home_to_favourites, bundle)
                 true
             }
 

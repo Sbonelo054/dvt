@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.dvt.dvtapp.adapter.FavouritesAdapter
 import com.dvt.dvtapp.database.FavouriteTable
 import com.dvt.dvtapp.databinding.FragmentFavouritesBinding
 import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
+import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouritesFragment : Fragment() {
@@ -31,13 +33,21 @@ class FavouritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchFavouriteWeather()
+        val description = arguments?.getString("description")
+        fetchFavouriteWeather(description.toString())
     }
 
-    private fun fetchFavouriteWeather(){
+    private fun fetchFavouriteWeather(description: String){
         favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner){
             if (it != null) {
-                adapter = FavouritesAdapter(requireContext())
+                    if (description.contains(getString(R.string.cloud))) {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
+                    } else if (description.contains(getString(R.string.rain))) {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
+                    } else {
+                        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+                    }
+                adapter = FavouritesAdapter()
                 binding.favouriteRecyclerview.setHasFixedSize(true)
                 binding.favouriteRecyclerview.adapter = adapter
                 adapter?.setData(it)

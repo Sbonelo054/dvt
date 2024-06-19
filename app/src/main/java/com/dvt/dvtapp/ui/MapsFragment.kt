@@ -84,8 +84,7 @@ class MapsFragment : Fragment() {
                             if (it != null) {
                                 for (place in it) {
                                     val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                                    val addresses: List<Address>? =
-                                        geocoder.getFromLocationName(place.place, 10)
+                                    val addresses: List<Address>? = geocoder.getFromLocationName(place.place, 1)
                                     val lat: Double? = addresses?.get(0)?.latitude
                                     val lon: Double? = addresses?.get(0)?.longitude
 

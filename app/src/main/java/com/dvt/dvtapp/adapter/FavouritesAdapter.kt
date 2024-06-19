@@ -1,20 +1,16 @@
 package com.dvt.dvtapp.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.database.FavouriteTable
 import com.squareup.picasso.Picasso
 
-class FavouritesAdapter(var context: Context): RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder>() {
+class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.FavouritesViewHolder>() {
     var favourites: List<FavouriteTable> = ArrayList()
     private var onClickListener: OnClickListener? = null
 
@@ -26,22 +22,15 @@ class FavouritesAdapter(var context: Context): RecyclerView.Adapter<FavouritesAd
     override fun onBindViewHolder(holder: FavouritesAdapter.FavouritesViewHolder, position: Int) {
         val favourite = favourites[position]
         if (favourite.description?.contains("Cloud") == true) {
-            holder.favouriteBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.cloudy_color))
             Picasso.get().load(R.drawable.partlysunny_2x).into(holder.image)
         } else if (favourite.description?.contains("Rain") == true) {
-            holder.favouriteBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.rainy_color))
             Picasso.get().load(R.drawable.rain_2x).into(holder.image)
         } else {
-            holder.favouriteBackground.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.sunny_color
-                )
-            )
             Picasso.get().load(R.drawable.clear_2x).into(holder.image)
         }
 
         holder.minMaxTemperature.text = "${favourite.maxTemp.take(2)}°/${favourite.minTemp.take(2)}°"
+        holder.description.text = favourite.description
         holder.favouritePlace.text = favourite.place
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
@@ -70,7 +59,7 @@ class FavouritesAdapter(var context: Context): RecyclerView.Adapter<FavouritesAd
     inner class FavouritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var minMaxTemperature: TextView = itemView.findViewById(R.id.favouriteTemperature)
         var favouritePlace: TextView = itemView.findViewById(R.id.favouritePlace)
-        var favouriteBackground: ConstraintLayout = itemView.findViewById(R.id.favourite_list_item)
+        var description: TextView = itemView.findViewById(R.id.favouriteDescription)
         var image: ImageView = itemView.findViewById(R.id.favouriteImage)
     }
 }
