@@ -38,8 +38,7 @@ class ForecastAdapter: RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder>(
         holder.dateView.text = resultDate
         val description = forecast[0].weather[0].main.toString()
         when {
-            description.contains("Cloud") -> {
-                Picasso.get().load(R.drawable.partlysunny_2x).into(holder.imageView)
+            description.contains("Cloud") -> { Picasso.get().load(R.drawable.partlysunny_2x).into(holder.imageView)
             }
             description.contains("Rain") -> {
                 Picasso.get().load(R.drawable.rain_2x).into(holder.imageView)

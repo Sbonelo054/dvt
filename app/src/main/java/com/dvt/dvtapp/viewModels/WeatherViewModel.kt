@@ -1,10 +1,8 @@
 package com.dvt.dvtapp.viewModels
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dvt.dvtapp.R
 import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.model.current.CurrentWeather
 import com.dvt.dvtapp.model.forecast.ForecastWeather
