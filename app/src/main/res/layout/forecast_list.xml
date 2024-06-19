@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/smallDimension"
+        android:paddingBottom="@dimen/smallDimension"
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="15dp"
+            android:fontFamily="@font/gotham_light"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -32,10 +33,10 @@
         <ImageView
             android:id="@+id/image_item"
             android:layout_width="0dp"
+            android:fontFamily="@font/gotham_light"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:textColor="@color/white"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/temperature_item"
@@ -43,8 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:fontFamily="@font/gotham_light"
             android:textColor="@color/white"
-            android:textSize="15sp"
+            android:textSize="@dimen/MediumSmallDimension"
             android:textStyle="bold" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,14 +8,14 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
+        android:layout_height="@dimen/miniDimension"
+        android:layout_margin="@dimen/smallDimension"
         android:background="@drawable/straight_line"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/favouriteImage"
-        android:layout_width="64dp"
+        android:layout_width="@dimen/mediumImage"
         android:layout_height="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,9 +29,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingLeft="50dp"
+        android:paddingLeft="@dimen/medium"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/gotham_light"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/favouriteImage"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +41,9 @@
         android:id="@+id/favouriteDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
+        android:paddingLeft="@dimen/medium"
+        android:textColor="@color/white"
+        android:fontFamily="@font/gotham_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/favouriteImage"
         app:layout_constraintTop_toBottomOf="@+id/favouritePlace" />
@@ -47,8 +51,10 @@
         android:id="@+id/favouriteTemperature"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
-        android:paddingLeft="50dp"
+        android:layout_marginBottom="@dimen/smallerDimension"
+        android:paddingLeft="@dimen/medium"
+        android:fontFamily="@font/gotham_light"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/favouriteImage"

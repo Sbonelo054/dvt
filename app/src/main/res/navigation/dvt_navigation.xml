@@ -24,6 +24,7 @@
         android:name="com.dvt.dvtapp.ui.FavouritesFragment"
         android:id="@+id/favourites_fragment"
         android:label="Favourites"
+        android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites"
         >
         <action
@@ -35,12 +36,15 @@
         android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
         android:id="@+id/favourites_details_fragment"
         android:label="Favourite Details"
+        android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites_details"
         />
 
     <fragment
         android:name="com.dvt.dvtapp.ui.MapsFragment"
         android:id="@+id/map_fragment"
+        android:fontFamily="@font/gotham_light"
+
         android:label="Maps"
         tools:layout="@layout/fragment_maps"/>
 
