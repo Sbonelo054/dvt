@@ -6,12 +6,12 @@ import com.dvt.dvtapp.database.FavouriteTable
 import com.dvt.dvtapp.database.WeatherDao
 import com.dvt.dvtapp.database.WeatherDatabase
 
-class FavouriteWeatherRepositoryImpl(application: Application): FavouriteWeatherRepository {
-    private lateinit var dao : WeatherDao
+class FavouriteWeatherRepositoryImpl(application: Application) : FavouriteWeatherRepository {
+    private lateinit var dao: WeatherDao
 
     init {
         val database = WeatherDatabase.getInstance(application)
-        if (database != null){
+        if (database != null) {
             dao = database.weatherDao()
         }
     }

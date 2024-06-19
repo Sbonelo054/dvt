@@ -17,6 +17,7 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintHorizontal_bias="0.0"
+        android:src="@drawable/forest_sunny"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -9,7 +9,7 @@ import com.dvt.dvtapp.model.forecast.ForecastWeather
 import com.dvt.dvtapp.repository.WeatherRepository
 import kotlinx.coroutines.launch
 
-class WeatherViewModel(private val weatherRepository: WeatherRepository): ViewModel() {
+class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
 
     fun getForecast(place: String?, unit: String): MutableLiveData<WeatherResults<ForecastWeather>> {
         val weatherData: MutableLiveData<WeatherResults<ForecastWeather>> = MutableLiveData()

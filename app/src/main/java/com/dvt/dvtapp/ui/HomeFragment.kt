@@ -53,7 +53,7 @@ import java.util.Locale
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: WeatherViewModel by inject()
-    private val favouriteWeatherViewModel : FavouriteWeatherViewModel by inject()
+    private val favouriteWeatherViewModel: FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var favouriteTable: FavouriteTable
     private var mainDescription: String = ""
@@ -95,6 +95,8 @@ class HomeFragment : Fragment() {
                 }
 
             }).check()
+        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
+
         return binding.root
     }
 
@@ -153,48 +155,28 @@ class HomeFragment : Fragment() {
                     binding.WeatherRecyclerview.layoutManager = linearLayoutManager
                     when {
                         description.toString().contains(getString(R.string.cloud)) -> {
-                            binding.root.setBackgroundColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.cloudy_color
-                                )
-                            )
+                            binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.cloudyStatusBar))))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.cloudy_color)
                             binding.imageView.setImageResource(R.drawable.forest_cloudy)
                         }
 
                         description.toString().contains(getString(R.string.rain)) -> {
-                            binding.root.setBackgroundColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.rainy_color
-                                )
-                            )
+                            binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.rainy_color)
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.rainyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_rainy)
                         }
 
                         description.toString().contains(getString(R.string.sun)) -> {
-                            binding.root.setBackgroundColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.sunny_color
-                                )
-                            )
+                            binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_sunny)
                         }
 
                         else -> {
-                            binding.root.setBackgroundColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.sunny_color
-                                )
-                            )
+                            binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_sunny)
@@ -233,7 +215,6 @@ class HomeFragment : Fragment() {
         if (showing)
             return
         val message = throwable.toString()
-
         val title: String
         val content: String
         when {
