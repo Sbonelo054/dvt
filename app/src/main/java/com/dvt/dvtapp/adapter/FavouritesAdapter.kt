@@ -28,11 +28,11 @@ class FavouritesAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: FavouritesAdapter.FavouritesViewHolder, position: Int) {
         val favourite = favourites[position]
         when {
-            favourite.description?.contains(context.resources.getString(R.string.cloud)) == true -> {
+            favourite.description.toString().contains(context.resources.getString(R.string.cloud)) -> {
                 Picasso.get().load(R.drawable.partlysunny_2x).into(holder.image)
             }
 
-            favourite.description?.contains(context.resources.getString(R.string.rain)) == true -> {
+            favourite.description.toString().contains(context.resources.getString(R.string.rain)) -> {
                 Picasso.get().load(R.drawable.rain_2x).into(holder.image)
             }
 
