@@ -11,7 +11,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
+import android.telecom.TelecomManager.EXTRA_LOCATION
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,9 +24,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dvt.dvtapp.MainActivity
@@ -35,6 +41,9 @@ import com.dvt.dvtapp.utils.Constants
 import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
 import com.dvt.dvtapp.viewModels.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -49,12 +58,16 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.ext.android.inject
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: WeatherViewModel by inject()
     private val favouriteWeatherViewModel: FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var currentLocation: Location? = null
     private lateinit var favouriteTable: FavouriteTable
     private var mainDescription: String = ""
     private var alert: Dialog? = null
@@ -76,11 +89,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        requestLocation()
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    getLocation()
+                    requestLocation()
                 }
 
                 override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
@@ -102,30 +116,46 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(
+    fun requestLocation() {
+        locationRequest = LocationRequest.create().apply {
+            interval = TimeUnit.SECONDS.toMillis(60)
+            fastestInterval = TimeUnit.SECONDS.toMillis(30)
+            maxWaitTime = TimeUnit.MINUTES.toMillis(2)
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                currentLocation = locationResult.lastLocation
+                setPlaceFromCoordinates(currentLocation)
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
         }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                val city: String? = addresses?.get(0)?.locality
-                fetchForecast(city.toString())
-            } else {
-                onSearch()
-                Toast.makeText(
-                    context,
-                    getString(R.string.location_is_not_available),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            setPlaceFromCoordinates(location)
+        }
+    }
+
+    private fun setPlaceFromCoordinates(location: Location?) {
+        if (location != null) {
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            val city: String? = addresses?.get(0)?.locality
+            fetchForecast(city.toString())
+        } else {
+            onSearch()
+            Toast.makeText(
+                context,
+                getString(R.string.location_is_not_available),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -194,13 +224,14 @@ class HomeFragment : Fragment() {
 
             val success = (response as? WeatherResults.SuccessResults)?.data
             success?.let {
-                binding.temperature.text = it.main?.temp.toString().take(2) + " °\n"
-                binding.currentTemp.text =
-                    it.main?.temp.toString().take(2) + " °\n" + getString(R.string.current)
-                binding.minTemp.text =
-                    it.main?.tempMin.toString().take(2) + " °\n" + getString(R.string.min)
-                binding.maxTemp.text =
-                    it.main?.tempMax.toString().take(2) + " °\n" + getString(R.string.max)
+                val temperature = "${it.main?.temp?.toInt().toString().take(2)}°"
+                val currentTemp = it.main?.temp?.toInt().toString().take(2) + " °\n" + getString(R.string.current)
+                val minTemp = it.main?.tempMin?.toInt().toString().take(2) + " °\n" + getString(R.string.min)
+                val maxTemp = it.main?.tempMax?.toInt().toString().take(2) + " °\n" + getString(R.string.max)
+                binding.temperature.text = temperature
+                binding.currentTemp.text = currentTemp
+                binding.minTemp.text = minTemp
+                binding.maxTemp.text = maxTemp
                 favouriteTable = FavouriteTable(
                     it.name.toString(),
                     it.main?.tempMin.toString(),
@@ -319,5 +350,10 @@ class HomeFragment : Fragment() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }

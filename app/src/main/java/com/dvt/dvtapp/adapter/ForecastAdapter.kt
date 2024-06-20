@@ -33,7 +33,8 @@ class ForecastAdapter(private val context: Context) : RecyclerView.Adapter<Forec
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
         val dayForecast = forecast[position]
-        holder.temperatureView.text = "${dayForecast.main?.temp.toString().take(2)}°"
+        val temperature = "${dayForecast.main?.temp?.toInt().toString().take(2)}°"
+        holder.temperatureView.text = temperature
         val parser = SimpleDateFormat("yyyy-mm-dd HH:mm")
         val formatter = SimpleDateFormat("EEEE HH:mm")
         val resultDate = formatter.format(parser.parse(dayForecast.dtTxt.toString()) as Date)

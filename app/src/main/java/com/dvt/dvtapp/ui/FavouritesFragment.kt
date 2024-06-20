@@ -1,5 +1,7 @@
 package com.dvt.dvtapp.ui
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dvt.dvtapp.MainActivity
 import com.dvt.dvtapp.R
 import com.dvt.dvtapp.adapter.FavouritesAdapter
 import com.dvt.dvtapp.database.FavouriteTable
@@ -32,7 +35,7 @@ class FavouritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val description = arguments?.getString("description")
+        val description = arguments?.getString(getString(R.string.description))
         fetchFavouriteWeather(description.toString())
     }
 
@@ -40,10 +43,19 @@ class FavouritesFragment : Fragment() {
         favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (description.contains(getString(R.string.cloud))) {
+                    val window = (requireActivity() as MainActivity).window
+                    window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.cloudy_color)
+                    (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.cloudyStatusBar))))
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.cloudy_color))
                 } else if (description.contains(getString(R.string.rain))) {
+                    val window = (requireActivity() as MainActivity).window
+                    window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.rainy_color)
+                    (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.rainyStatusBar))))
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
                 } else {
+                    val window = (requireActivity() as MainActivity).window
+                    window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
+                    (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
                     binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
                 }
                 adapter = FavouritesAdapter(requireContext())
@@ -55,7 +67,7 @@ class FavouritesFragment : Fragment() {
                 adapter?.setOnClickListener(object :
                     FavouritesAdapter.OnClickListener {
                     override fun onClick(position: Int, model: FavouriteTable) {
-                        val bundle = bundleOf(getString(R.string.place) to model.place, "description" to "description")
+                        val bundle = bundleOf(getString(R.string.place) to model.place, getString(R.string.description) to getString(R.string.description))
                         findNavController().navigate(
                             R.id.favourites_list_to_favourites_details_fragment, bundle
                         )

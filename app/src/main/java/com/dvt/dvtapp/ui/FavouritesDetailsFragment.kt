@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.dvt.dvtapp.MainActivity
 import com.dvt.dvtapp.R
+import com.dvt.dvtapp.database.FavouriteTable
 import com.dvt.dvtapp.databinding.FragmentFavouritesBinding
 import com.dvt.dvtapp.databinding.FragmentFavouritesDetailsBinding
 import com.dvt.dvtapp.model.WeatherResults
@@ -34,6 +35,7 @@ class FavouritesDetailsFragment : Fragment() {
         binding = FragmentFavouritesDetailsBinding.inflate(inflater, container, false)
         val place = arguments?.getString(getString(R.string.place))
         fetchWeather(place.toString())
+        fetchCurrentWeather(place.toString())
         return binding.root
     }
 
@@ -46,7 +48,6 @@ class FavouritesDetailsFragment : Fragment() {
             val success = (response as? WeatherResults.SuccessResults)?.data
             success?.let {
                 val description = it.weatherList[0].weather[0].main
-                val temperature = "${it.weatherList[0].main?.temp.toString().take(2)} °"
                 when {
                     description.toString().contains(getString(R.string.cloud)) -> {
                         val window = (requireActivity() as MainActivity).window
@@ -74,23 +75,8 @@ class FavouritesDetailsFragment : Fragment() {
                         Picasso.get().load(R.drawable.clear_2x).into(binding.favouriteDetailsIcon)
                     }
                 }
-                val visibilityData = "${it.weatherList[0].visibility.toString()} ft"
-                val pressureData = "${it.weatherList[0].main?.pressure.toString()} hPa"
                 val seaLevelData = "${it.weatherList[0].main?.grndLevel.toString()} hPa"
-                val humidityData = "${it.weatherList[0].main?.humidity.toString()} %"
-                val windData = "${it.weatherList[0].wind?.deg.toString()} °"
-                val cloudsData = "${it.weatherList[0].clouds?.all.toString()} %"
-
-                binding.favouriteDetailsDescription.text = description
-                binding.favouriteDetailsTemperature.text = temperature
-                binding.favouriteDetailsCity.text = place
-                binding.favouriteDetailsCurrentDate.text = getString(R.string.today)
-                binding.favouriteDetailsClouds.text = cloudsData
-                binding.favouriteDetailsWind.text = windData
-                binding.favouriteDetailsPressure.text = pressureData
                 binding.favouriteDetailsSeaLevel.text = seaLevelData
-                binding.favouriteDetailsHumidity.text = humidityData
-                binding.favouriteDetailsVisibility.text = visibilityData
 
                 val firstTempData = "${it.weatherList[1].main?.tempMax?.toInt().toString()} °"
                 val secondTempData = "${it.weatherList[2].main?.tempMax?.toInt().toString()} °"
@@ -106,6 +92,33 @@ class FavouritesDetailsFragment : Fragment() {
                 binding.favouriteDetailsSecondTime.text = it.weatherList[2].dtTxt?.substring(10, 16)
                 binding.favouriteDetailsThirdTime.text = it.weatherList[3].dtTxt?.substring(10, 16)
                 binding.favouriteDetailsForthTime.text = it.weatherList[4].dtTxt?.substring(10, 16)
+            }
+        }
+    }
+
+    private fun fetchCurrentWeather(place: String){
+        weatherViewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
+            val error = response as? WeatherResults.Error
+            if (error != null) {
+                connectionError(error.error)
+            }
+
+            val success = (response as? WeatherResults.SuccessResults)?.data
+            success?.let {
+                val temperature = "${it.main?.temp?.toInt().toString().take(2)}°"
+                binding.favouriteDetailsTemperature.text = temperature
+                val visibilityData = "${it.visibility.toString()} ft"
+                val pressureData = "${it.main?.pressure.toString()} hPa"
+                val humidityData = "${it.main?.humidity.toString()} %"
+                val windData = "${it.wind?.deg.toString()} °"
+                val cloudsData = "${it.clouds?.all.toString()} %"
+                binding.favouriteDetailsCity.text = place
+                binding.favouriteDetailsCurrentDate.text = getString(R.string.today)
+                binding.favouriteDetailsClouds.text = cloudsData
+                binding.favouriteDetailsWind.text = windData
+                binding.favouriteDetailsPressure.text = pressureData
+                binding.favouriteDetailsHumidity.text = humidityData
+                binding.favouriteDetailsVisibility.text = visibilityData
             }
         }
     }
