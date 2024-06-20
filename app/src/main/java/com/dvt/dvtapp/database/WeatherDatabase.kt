@@ -26,9 +26,6 @@ abstract class WeatherDatabase : RoomDatabase() {
         }
 
         private val callback: Callback = object : Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-            }
         }
     }
 }

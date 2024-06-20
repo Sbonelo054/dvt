@@ -8,7 +8,8 @@ data class FavouriteTable(
     var place: String,
     var minTemp: String,
     var maxTemp: String,
-    var description: String?){
+    var description: String?
+) {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 }
