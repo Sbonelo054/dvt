@@ -76,37 +76,42 @@ class MapsFragment : Fragment() {
             return
         }
         val task = fusedLocationClient?.lastLocation
-        supportMapFragment?.getMapAsync { googleMap ->
-                favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
-                    if (it != null) {
-                        for (place in it) {
-                            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-                            val addresses: List<Address>? = geocoder.getFromLocationName(place.place, 1)
-                            val lat: Double? = addresses?.get(0)?.latitude
-                            val lon: Double? = addresses?.get(0)?.longitude
+        task?.addOnSuccessListener { location ->
+            supportMapFragment?.getMapAsync(object : OnMapReadyCallback {
+                override fun onMapReady(googleMap: GoogleMap) {
+                    if (location != null) {
+                        favouriteViewModel.getFavourites()?.observe(viewLifecycleOwner) {
+                            if (it != null) {
+                                for (place in it) {
+                                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                                    val addresses: List<Address>? = geocoder.getFromLocationName(place.place, 1)
+                                    val lat: Double? = addresses?.get(0)?.latitude
+                                    val lon: Double? = addresses?.get(0)?.longitude
 
-                            if (lat != null && lon != null) {
-                                val favLatLon = LatLng(lat, lon)
-                                val locationArrayList: ArrayList<LatLng> = ArrayList()
-                                locationArrayList.add(favLatLon)
-                                for (i in locationArrayList.indices) {
-                                    googleMap.addMarker(MarkerOptions().position(locationArrayList[i]).title(getString(R.string.favourites)))
-                                    task?.addOnSuccessListener { location ->
-                                        if(location != null){
-                                            googleMap.isMyLocationEnabled = true
+                                    if (lat != null && lon != null) {
+                                        val favLatLon = LatLng(lat, lon)
+                                        val locationArrayList: ArrayList<LatLng> = ArrayList()
+                                        locationArrayList.add(favLatLon)
+                                        for (i in locationArrayList.indices) {
+                                            googleMap.addMarker(
+                                                MarkerOptions().position(
+                                                    locationArrayList[i]
+                                                ).title("Favourites")
+                                            )
+                                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f))
+                                            googleMap.moveCamera(
+                                                CameraUpdateFactory.newLatLng(
+                                                    locationArrayList[i]
+                                                )
+                                            )
                                         }
                                     }
-                                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f))
-                                    googleMap.moveCamera(
-                                        CameraUpdateFactory.newLatLng(
-                                            locationArrayList[i]
-                                        )
-                                    )
                                 }
                             }
                         }
                     }
                 }
+            })
         }
     }
 }

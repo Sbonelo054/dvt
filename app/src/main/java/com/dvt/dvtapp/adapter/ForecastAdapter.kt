@@ -32,6 +32,7 @@ class ForecastAdapter(private val context: Context) : RecyclerView.Adapter<Forec
 
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ForecastViewHolder, position: Int) {
+
         val dayForecast = forecast[position]
         val temperature = "${dayForecast.main?.temp?.toInt().toString().take(2)}°"
         holder.temperatureView.text = temperature

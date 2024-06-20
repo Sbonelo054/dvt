@@ -23,4 +23,6 @@ class FavouriteWeatherRepositoryImpl(application: Application) : FavouriteWeathe
     override fun getFavourites(): LiveData<List<FavouriteTable>>? {
         return dao.getFavorites()
     }
+
+
 }

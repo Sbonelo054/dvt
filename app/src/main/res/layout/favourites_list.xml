@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/favourite_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -17,23 +18,24 @@
         android:id="@+id/favouriteImage"
         android:layout_width="@dimen/mediumImage"
         android:layout_height="64dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintHorizontal_bias="0.046"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/favouritePlace"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/gotham_light"
         android:paddingLeft="@dimen/medium"
+        android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        android:fontFamily="@font/gotham_light"
-        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/favouriteImage"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,6 +45,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/medium"
         android:textColor="@color/white"
+        android:textStyle="bold"
         android:fontFamily="@font/gotham_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/favouriteImage"
@@ -54,6 +57,7 @@
         android:layout_marginBottom="@dimen/smallerDimension"
         android:paddingLeft="@dimen/medium"
         android:fontFamily="@font/gotham_light"
+        android:textStyle="bold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
