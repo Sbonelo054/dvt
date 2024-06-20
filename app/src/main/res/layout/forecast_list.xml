@@ -23,7 +23,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingStart="15dp"
+            android:paddingStart="@dimen/smallMediumDimension"
             android:fontFamily="@font/gotham_light"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -33,7 +33,7 @@
             android:id="@+id/image_item"
             android:layout_width="0dp"
             android:fontFamily="@font/gotham_light"
-            android:layout_height="30dp"
+            android:layout_height="@dimen/marginStandard"
             android:layout_weight="1"
             android:textColor="@color/white" />
 

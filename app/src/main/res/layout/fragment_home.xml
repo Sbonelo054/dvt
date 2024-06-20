@@ -124,7 +124,7 @@
         android:layout_height="0dp"
         android:gravity="top|center_horizontal"
         android:textColor="@color/white"
-        android:textSize="35sp"
+        android:textSize="@dimen/mediumSmall"
         android:fontFamily="@font/gotham_light"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"

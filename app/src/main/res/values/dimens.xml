@@ -5,8 +5,13 @@
     <dimen name="smallDimension">8dp</dimen>
     <dimen name="smallMediumDimension">16dp</dimen>
     <dimen name="miniDimension">1dp</dimen>
+    <dimen name="smallPadding">2dp</dimen>
     <dimen name="smallerDimension">3dp</dimen>
     <dimen name="MediumSmallDimension">15sp</dimen>
-    <dimen name="large">85dp</dimen>
+    <dimen name="mediumSmallMargin">20sp</dimen>
+    <dimen name="mediumSmall">35sp</dimen>
+    <dimen name="large">86dp</dimen>
+    <dimen name="larger">100dp</dimen>
     <dimen name="mediumLarge">52sp</dimen>
+    <dimen name="marginStandard">32dp</dimen>
 </resources>
