@@ -304,7 +304,7 @@ class HomeFragment : Fragment() {
 
             R.id.menu_add_favourite -> {
                 favouriteWeatherViewModel.addFavourite(favouriteTable)
-                Snackbar.make(binding.root, "Successfully added as favourite", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, getString(R.string.successfully_added_as_favourite), Snackbar.LENGTH_LONG).show()
                 findNavController().navigateUp()
                 true
             }
@@ -323,12 +323,6 @@ class HomeFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    /*    override fun onResume() {
-            super.onResume()
-            dialog?.hide()
-        }*/
-
     override fun onDestroy() {
         super.onDestroy()
         fusedLocationClient.removeLocationUpdates(locationCallback)

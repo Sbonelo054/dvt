@@ -35,4 +35,5 @@
     <string name="sea_level">Sea Level</string>
     <string name="description">description</string>
     <string name="go_offline">Go offline</string>
+    <string name="successfully_added_as_favourite">Successfully added as favourite</string>
 </resources>
