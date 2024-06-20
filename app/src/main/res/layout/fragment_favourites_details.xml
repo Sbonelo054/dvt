@@ -23,7 +23,7 @@
             android:layout_marginRight="@dimen/smallDimension"
             android:fontFamily="@font/gotham_light"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="@dimen/mediumSmallMargin"
             app:layout_constraintBottom_toTopOf="@+id/favouriteDetailsTemperature"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:layout_marginRight="@dimen/smallDimension"
             android:fontFamily="@font/gotham_light"
             android:textColor="@color/white"
-            android:textSize="50sp"
+            android:textSize="@dimen/mediumLarge"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/favouriteDetailsCity"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,12 +66,12 @@
 
         <ImageView
             android:id="@+id/favouriteDetailsIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="86dp"
-            android:layout_marginRight="86dp"
+            android:layout_width="@dimen/larger"
+            android:layout_height="@dimen/larger"
+            android:layout_marginStart="@dimen/smallMediumDimension"
+            android:layout_marginTop="@dimen/smallMediumDimension"
+            android:layout_marginEnd="@dimen/large"
+            android:layout_marginRight="@dimen/large"
             app:layout_constraintEnd_toStartOf="@+id/favouriteDetailsTemperature"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,10 +87,10 @@
             android:layout_marginEnd="@dimen/smallDimension"
             android:layout_marginRight="@dimen/smallDimension"
             android:fontFamily="@font/gotham_light"
-            android:padding="2dp"
+            android:padding="@dimen/smallPadding"
             android:text="@string/today"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="@dimen/mediumSmallMargin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/favouriteDetailsCity" />
@@ -126,9 +126,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
-                    android:padding="2dp"
+                    android:padding="@dimen/smallPadding"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/mediumSmallMargin"
                     android:textStyle="bold" />
 
                 <TextView
@@ -155,9 +155,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
-                    android:padding="2dp"
+                    android:padding="@dimen/smallPadding"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/mediumSmallMargin"
                     android:textStyle="bold" />
 
                 <TextView
@@ -167,7 +167,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/mediumSmallMargin" />
             </LinearLayout>
 
             <LinearLayout
@@ -182,9 +182,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
-                    android:padding="2dp"
+                    android:padding="@dimen/smallPadding"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/mediumSmallMargin"
                     android:textStyle="bold" />
 
                 <TextView
@@ -194,7 +194,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/mediumSmallMargin" />
 
 
             </LinearLayout>
@@ -213,9 +213,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
-                    android:padding="2dp"
+                    android:padding="@dimen/smallPadding"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/mediumSmallMargin"
                     android:textStyle="bold" />
 
                 <TextView
@@ -225,7 +225,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/gotham_light"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/mediumSmallMargin" />
             </LinearLayout>
         </LinearLayout>
 
@@ -423,7 +423,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/gotham_light"
-                            android:padding="2dp"
+                            android:padding="@dimen/smallPadding"
                             android:textColor="@android:color/black" />
                     </LinearLayout>
                 </LinearLayout>
@@ -467,7 +467,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/gotham_light"
-                            android:padding="2dp"
+                            android:padding="@dimen/smallPadding"
                             android:textColor="@android:color/black" />
                     </LinearLayout>
                 </LinearLayout>
@@ -516,7 +516,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/gotham_light"
-                            android:padding="2dp"
+                            android:padding="@dimen/smallPadding"
                             android:textColor="@android:color/black" />
 
                     </LinearLayout>

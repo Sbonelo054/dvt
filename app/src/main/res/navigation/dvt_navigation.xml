@@ -23,7 +23,7 @@
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesFragment"
         android:id="@+id/favourites_fragment"
-        android:label="Favourites"
+        android:label="@string/favourites"
         android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites"
         >
@@ -35,7 +35,7 @@
     <fragment
         android:name="com.dvt.dvtapp.ui.FavouritesDetailsFragment"
         android:id="@+id/favourites_details_fragment"
-        android:label="Favourite Details"
+        android:label="@string/favourite_details"
         android:fontFamily="@font/gotham_light"
         tools:layout="@layout/fragment_favourites_details"
         />
@@ -44,8 +44,7 @@
         android:name="com.dvt.dvtapp.ui.MapsFragment"
         android:id="@+id/map_fragment"
         android:fontFamily="@font/gotham_light"
-
-        android:label="Maps"
+        android:label="@string/maps"
         tools:layout="@layout/fragment_maps"/>
 
 </navigation>

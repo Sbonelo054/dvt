@@ -19,6 +19,8 @@
     <string name="current">"Current "</string>
     <string name="min">"min "</string>
     <string name="max">"max "</string>
+    <string name="favourite_details">Favourite Details</string>
+    <string name="maps">Maps</string>
     <string name="location_is_not_available">Location is not available</string>
     <string name="metric">metric</string>
     <string name="place">place</string>
@@ -36,4 +38,5 @@
     <string name="description">description</string>
     <string name="go_offline">Go offline</string>
     <string name="successfully_added_as_favourite">Successfully added as favourite</string>
+    <string name="exit">Exit</string>
 </resources>
