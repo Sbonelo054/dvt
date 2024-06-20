@@ -255,7 +255,7 @@ class HomeFragment : Fragment() {
         builder.setTitle(title)
             .setMessage(content)
             .setCancelable(true)
-            .setPositiveButton("Exit") { dialog: DialogInterface?, _: Int ->
+            .setPositiveButton(getString(R.string.exit)) { dialog: DialogInterface?, _: Int ->
                 onDestroy()
                 dialog?.dismiss()
             }
