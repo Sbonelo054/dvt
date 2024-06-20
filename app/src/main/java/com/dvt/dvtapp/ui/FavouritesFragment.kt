@@ -24,7 +24,6 @@ class FavouritesFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesBinding
     private val favouriteWeatherViewModel by viewModel<FavouriteWeatherViewModel>()
     private var adapter: FavouritesAdapter? = null
-    private var dialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +41,7 @@ class FavouritesFragment : Fragment() {
     }
 
     private fun fetchFavouriteWeather(description: String) {
-        dialog = ProgressDialog.show(context, "Loading", "Please wait...", true)
         favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner) {
-            dialog?.hide()
             if (it != null) {
                 if (description.contains(getString(R.string.cloud))) {
                     val window = (requireActivity() as MainActivity).window

@@ -14,7 +14,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -56,20 +55,17 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.ext.android.inject
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: WeatherViewModel by inject()
     private val favouriteWeatherViewModel: FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var currentLocation: Location? = null
     private lateinit var favouriteTable: FavouriteTable
     private var alert: Dialog? = null
     private var adapter: ForecastAdapter? = null
-    private var dialog: ProgressDialog? = null
     private var description = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,18 +92,6 @@ class HomeFragment : Fragment() {
     }
 
     fun requestLocation() {
-        locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(30)
-            fastestInterval = TimeUnit.SECONDS.toMillis(30)
-            maxWaitTime = TimeUnit.MINUTES.toMillis(1)
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                currentLocation = locationResult.lastLocation
-            }
-        }
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -115,7 +99,6 @@ class HomeFragment : Fragment() {
         ) {
             return
         }
-        //fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             currentLocation = location
             setPlaceFromCoordinates(location)
@@ -128,8 +111,6 @@ class HomeFragment : Fragment() {
             val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
             val city: String? = addresses?.get(0)?.locality
             fetchForecast(city.toString())
-        } else {
-            //dialog = ProgressDialog.show(context, "Loading", "Please wait...", true)
         }
     }
 
@@ -164,10 +145,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchForecast(place: String) {
-       // dialog = ProgressDialog.show(context, "Loading", "Please wait...", true)
         viewModel.getForecast(place, unit = getString(R.string.metric))
             .observe(viewLifecycleOwner) { response ->
-                //dialog?.hide()
                 val error = response as? WeatherResults.Error
                 if (error != null) {
                     connectionError(error.error)
@@ -277,7 +256,7 @@ class HomeFragment : Fragment() {
             .setMessage(content)
             .setCancelable(true)
             .setPositiveButton("Exit") { dialog: DialogInterface?, _: Int ->
-               onDestroy()
+                onDestroy()
                 dialog?.dismiss()
             }
         alert = builder.create()
@@ -325,7 +304,7 @@ class HomeFragment : Fragment() {
 
             R.id.menu_add_favourite -> {
                 favouriteWeatherViewModel.addFavourite(favouriteTable)
-                Snackbar.make(binding.root, "Successfully added as favourite", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, getString(R.string.successfully_added_as_favourite), Snackbar.LENGTH_LONG).show()
                 findNavController().navigateUp()
                 true
             }
@@ -344,12 +323,6 @@ class HomeFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-/*    override fun onResume() {
-        super.onResume()
-        dialog?.hide()
-    }*/
-
     override fun onDestroy() {
         super.onDestroy()
         fusedLocationClient.removeLocationUpdates(locationCallback)
