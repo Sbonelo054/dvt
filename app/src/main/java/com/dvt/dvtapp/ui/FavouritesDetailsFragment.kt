@@ -27,7 +27,6 @@ class FavouritesDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesDetailsBinding
     private val weatherViewModel by viewModel<WeatherViewModel>()
     private var alert: Dialog? = null
-    private var dialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +37,6 @@ class FavouritesDetailsFragment : Fragment() {
         val place = arguments?.getString(getString(R.string.place))
         fetchWeather(place.toString())
         fetchCurrentWeather(place.toString())
-        dialog = ProgressDialog.show(context, "Loading", "Please wait...", true)
         return binding.root
     }
 
@@ -99,9 +97,8 @@ class FavouritesDetailsFragment : Fragment() {
         }
     }
 
-    private fun fetchCurrentWeather(place: String){
+    private fun fetchCurrentWeather(place: String) {
         weatherViewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
-            dialog?.hide()
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
