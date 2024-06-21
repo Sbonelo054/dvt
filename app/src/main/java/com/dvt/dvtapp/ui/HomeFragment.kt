@@ -13,6 +13,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -38,6 +39,8 @@ import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
 import com.dvt.dvtapp.viewModels.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -59,7 +62,6 @@ class HomeFragment : Fragment() {
     private val viewModel: WeatherViewModel by inject()
     private val favouriteWeatherViewModel: FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
     private var currentLocation: Location? = null
     private lateinit var favouriteTable: FavouriteTable
     private var alert: Dialog? = null
@@ -90,7 +92,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    fun requestLocation() {
+    fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -104,12 +106,41 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun requestLocationUpdates() {
+        val locationRequest: LocationRequest = LocationRequest.create().apply {
+            this.interval = 10000
+            this.fastestInterval = 5000
+            this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    setPlaceFromCoordinates(location)
+                }
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+
     private fun setPlaceFromCoordinates(location: Location?) {
         if (location != null) {
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
             val addresses: List<Address>? = geocoder.getFromLocation(location.latitude, location.longitude, 1)
             val city: String? = addresses?.get(0)?.locality
             fetchForecast(city.toString())
+        } else {
+            requestLocationUpdates()
         }
     }
 
@@ -118,13 +149,13 @@ class HomeFragment : Fragment() {
         adapter = ForecastAdapter(requireContext())
         binding.WeatherRecyclerview.setHasFixedSize(true)
         binding.WeatherRecyclerview.adapter = adapter
-        requestLocation()
+        getLastLocation()
         progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleLarge)
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    requestLocation()
+                    getLastLocation()
                 }
 
                 override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
@@ -139,7 +170,6 @@ class HomeFragment : Fragment() {
                 }
 
             }).check()
-        setPlaceFromCoordinates(currentLocation)
         val linearLayoutManager = LinearLayoutManager(requireActivity())
         binding.WeatherRecyclerview.layoutManager = linearLayoutManager
     }
@@ -332,9 +362,5 @@ class HomeFragment : Fragment() {
 
             else -> super.onOptionsItemSelected(item)
         }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
