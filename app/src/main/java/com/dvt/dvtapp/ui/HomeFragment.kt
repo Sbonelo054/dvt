@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,6 +19,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -38,8 +39,6 @@ import com.dvt.dvtapp.viewModels.FavouriteWeatherViewModel
 import com.dvt.dvtapp.viewModels.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -56,6 +55,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.ext.android.inject
 import java.util.Locale
 
+
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: WeatherViewModel by inject()
@@ -65,6 +65,7 @@ class HomeFragment : Fragment() {
     private var currentLocation: Location? = null
     private lateinit var favouriteTable: FavouriteTable
     private var alert: Dialog? = null
+    private var progressBar: ProgressBar? = null
     private var adapter: ForecastAdapter? = null
     private var description = ""
 
@@ -120,6 +121,7 @@ class HomeFragment : Fragment() {
         binding.WeatherRecyclerview.setHasFixedSize(true)
         binding.WeatherRecyclerview.adapter = adapter
         requestLocation()
+        progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleLarge)
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
@@ -144,7 +146,16 @@ class HomeFragment : Fragment() {
         binding.WeatherRecyclerview.layoutManager = linearLayoutManager
     }
 
+    private fun showLoadingDialog() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingDialog() {
+        binding.progressBar.visibility =View.GONE
+    }
+
     private fun fetchForecast(place: String) {
+        showLoadingDialog()
         viewModel.getForecast(place, unit = getString(R.string.metric))
             .observe(viewLifecycleOwner) { response ->
                 val error = response as? WeatherResults.Error
@@ -167,14 +178,14 @@ class HomeFragment : Fragment() {
                             binding.imageView.setImageResource(R.drawable.forest_cloudy)
                         }
 
-                        description.toString().contains(getString(R.string.rain)) -> {
+                        description.contains(getString(R.string.rain)) -> {
                             binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.rainy_color))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.rainy_color)
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.rainyStatusBar))))
                             binding.imageView.setImageResource(R.drawable.forest_rainy)
                         }
 
-                        description.toString().contains(getString(R.string.sun)) -> {
+                        description.contains(getString(R.string.sun)) -> {
                             binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.sunny_color))
                             window.statusBarColor = (requireActivity() as MainActivity).resources.getColor(R.color.sunny_color)
                             (requireActivity() as MainActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(getString(R.string.sunnyStatusBar))))
@@ -190,8 +201,9 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-        viewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
 
+        viewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
+            hideLoadingDialog()
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
