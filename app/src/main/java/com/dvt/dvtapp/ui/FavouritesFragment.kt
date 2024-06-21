@@ -1,15 +1,15 @@
 package com.dvt.dvtapp.ui
 
-import android.app.ProgressDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dvt.dvtapp.MainActivity
@@ -24,6 +24,8 @@ class FavouritesFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesBinding
     private val favouriteWeatherViewModel by viewModel<FavouriteWeatherViewModel>()
     private var adapter: FavouritesAdapter? = null
+    private var progressBar: ProgressBar? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +36,25 @@ class FavouritesFragment : Fragment() {
         return binding.root
     }
 
+    private fun showLoadingDialog() {
+        binding.progressDialog.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingDialog() {
+        binding.progressDialog.progressBar.visibility = View.GONE
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleLarge)
         val description = arguments?.getString(getString(R.string.description))
         fetchFavouriteWeather(description.toString())
     }
 
     private fun fetchFavouriteWeather(description: String) {
+        showLoadingDialog()
         favouriteWeatherViewModel.getFavourites()?.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
             if (it != null) {
                 if (description.contains(getString(R.string.cloud))) {
                     val window = (requireActivity() as MainActivity).window

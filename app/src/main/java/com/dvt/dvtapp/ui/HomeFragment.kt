@@ -20,7 +20,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -54,7 +53,6 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.ext.android.inject
 import java.util.Locale
-
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -147,11 +145,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun showLoadingDialog() {
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressDialog.progressBar.visibility = View.VISIBLE
     }
 
     private fun hideLoadingDialog() {
-        binding.progressBar.visibility =View.GONE
+        binding.progressDialog.progressBar.visibility = View.GONE
     }
 
     private fun fetchForecast(place: String) {
