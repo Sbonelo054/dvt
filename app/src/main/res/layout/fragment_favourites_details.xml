@@ -525,5 +525,14 @@
             </androidx.cardview.widget.CardView>
 
         </GridLayout>
+
+        <include
+            android:id="@+id/progressDialog"
+            layout="@layout/progress_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>
