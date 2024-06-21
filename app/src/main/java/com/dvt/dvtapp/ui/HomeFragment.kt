@@ -62,7 +62,6 @@ class HomeFragment : Fragment() {
     private val viewModel: WeatherViewModel by inject()
     private val favouriteWeatherViewModel: FavouriteWeatherViewModel by inject()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var currentLocation: Location? = null
     private lateinit var favouriteTable: FavouriteTable
     private var alert: Dialog? = null
     private var progressBar: ProgressBar? = null
@@ -101,7 +100,6 @@ class HomeFragment : Fragment() {
             return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            currentLocation = location
             setPlaceFromCoordinates(location)
         }
     }
@@ -132,7 +130,6 @@ class HomeFragment : Fragment() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-
     private fun setPlaceFromCoordinates(location: Location?) {
         if (location != null) {
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
@@ -149,7 +146,6 @@ class HomeFragment : Fragment() {
         adapter = ForecastAdapter(requireContext())
         binding.WeatherRecyclerview.setHasFixedSize(true)
         binding.WeatherRecyclerview.adapter = adapter
-        getLastLocation()
         progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleLarge)
         Dexter.withContext(requireActivity())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
