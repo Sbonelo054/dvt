@@ -2,21 +2,19 @@ package com.dvt.dvtapp.ui
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dvt.dvtapp.MainActivity
 import com.dvt.dvtapp.R
-import com.dvt.dvtapp.database.FavouriteTable
-import com.dvt.dvtapp.databinding.FragmentFavouritesBinding
 import com.dvt.dvtapp.databinding.FragmentFavouritesDetailsBinding
 import com.dvt.dvtapp.model.WeatherResults
 import com.dvt.dvtapp.viewModels.WeatherViewModel
@@ -27,6 +25,7 @@ class FavouritesDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesDetailsBinding
     private val weatherViewModel by viewModel<WeatherViewModel>()
     private var alert: Dialog? = null
+    private var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,12 +34,22 @@ class FavouritesDetailsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFavouritesDetailsBinding.inflate(inflater, container, false)
         val place = arguments?.getString(getString(R.string.place))
+        progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleLarge)
         fetchWeather(place.toString())
         fetchCurrentWeather(place.toString())
         return binding.root
     }
 
+    private fun showLoadingDialog() {
+        binding.progressDialog.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingDialog() {
+        binding.progressDialog.progressBar.visibility = View.GONE
+    }
+
     private fun fetchWeather(place: String) {
+        showLoadingDialog()
         weatherViewModel.getForecast(place, unit = getString(R.string.metric)).observe(viewLifecycleOwner) { response ->
             val error = response as? WeatherResults.Error
             if (error != null) {
@@ -99,6 +108,7 @@ class FavouritesDetailsFragment : Fragment() {
 
     private fun fetchCurrentWeather(place: String) {
         weatherViewModel.getCurrentWeather(place).observe(viewLifecycleOwner) { response ->
+            hideLoadingDialog()
             val error = response as? WeatherResults.Error
             if (error != null) {
                 connectionError(error.error)
